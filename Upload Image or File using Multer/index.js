@@ -4,6 +4,7 @@ const multer  = require('multer')
 const app = express()
 const port = 3000
 const path = require('path')
+const fs = require('fs')
 // console.log(path)
 
 const storage = multer.diskStorage({
@@ -14,7 +15,9 @@ const storage = multer.diskStorage({
   }
 })
 
-const upload = multer({ storage })
+const upload = multer({ storage,limits:{
+  fileSize: 1024 * 1024 * 2
+} })
 
 // middleware 
 app.use(express.static("public"))
@@ -33,6 +36,15 @@ app.post("/upload",upload.single('image'),(req,res)=>{
   message:"File Upload successful",
   file: req.file.filename
 })
+})
+
+// delete 
+app.delete("/delete/:filename",(req,res)=>{
+  const FilePath = path.join(process.cwd(), "uploads",req.params.filename)
+  fs.unlink(FilePath,(err)=>{
+    if(err) return res.status(500).json({error:"File delete succedful"});
+    res.status(200).json({message:"File deleted succedful"})
+  })
 })
 
 app.listen(port, () => {
