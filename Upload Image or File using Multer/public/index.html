@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uplode Images using multer</title>
+</head>
+<body>
+    <h1>
+        Uplode Images
+    </h1>
+
+    <form id="UploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+          <input type="file" name="image" required/>
+          <button type="submit">Uplode</button>
+    </form >
+
+    <!-- display image  -->
+     <h2>Display Image</h2>
+     <img id="UploadImages" src="" alt="uplode img succed" width="400">
+
+     <script>
+        document.getElementById('UploadForm').addEventListener("submit", async (e)=>{
+        e.preventDefault()
+
+        const fromdata = new FormData(e.target);
+        const response = await fetch("/upload",{
+            method:"POST",
+            body:fromdata 
+        })
+
+        const result = await response.json()
+        if(result.file){
+            document.getElementById("UploadImages").src = `/uploads/${result.file}`
+        }
+        })
+     </script>
+</body>
+</html>  
